@@ -1,0 +1,1761 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Letter Generator</title>
+
+<style>
+/* =========================
+   RESET & GLOBAL
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #172033;
+    --muted: #667085;
+    --border: #e2e8f0;
+    --success: #16a34a;
+    --danger: #dc2626;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: 0.3s;
+}
+
+/* DARK MODE */
+body.dark {
+    --bg: #111827;
+    --card: #1f2937;
+    --text: #f9fafb;
+    --muted: #aab3c2;
+    --border: #374151;
+}
+
+/* =========================
+   HEADER
+========================= */
+header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar {
+    max-width: 1200px;
+    margin: auto;
+    padding: 16px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    background: var(--primary);
+    color: white;
+    padding: 7px 10px;
+    border-radius: 9px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-actions a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.theme-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+/* =========================
+   HERO
+========================= */
+.hero {
+    text-align: center;
+    padding: 70px 20px 55px;
+    background: linear-gradient(180deg, var(--card), var(--bg));
+}
+
+.hero h1 {
+    font-size: 46px;
+    line-height: 1.15;
+    margin-bottom: 15px;
+}
+
+.hero h1 span {
+    color: var(--primary);
+}
+
+.hero p {
+    max-width: 680px;
+    margin: auto;
+    color: var(--muted);
+}
+
+/* SEARCH */
+.search-box {
+    max-width: 800px;
+    margin: 30px auto 15px;
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 7px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    padding: 14px;
+    font-size: 16px;
+}
+
+.btn {
+    border: none;
+    background: var(--primary);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.suggestions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* =========================
+   MAIN SECTIONS
+========================= */
+.section {
+    max-width: 1200px;
+    margin: auto;
+    padding: 55px 22px;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.section-title h2 {
+    font-size: 30px;
+}
+
+.section-title p {
+    color: var(--muted);
+}
+
+/* FILTER */
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.filter-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 9px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* TEMPLATE GRID */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 18px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.card-icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    margin: auto auto 15px;
+    border-radius: 50%;
+    background: #eaf2ff;
+    font-size: 25px;
+}
+
+.card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.card .btn {
+    margin-top: auto;
+}
+
+/* =========================
+   HOW IT WORKS
+========================= */
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 25px;
+    text-align: center;
+}
+
+.step-number {
+    width: 45px;
+    height: 45px;
+    margin: auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.step h3 {
+    margin: 12px 0 5px;
+}
+
+.step p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* =========================
+   MODAL
+========================= */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 200;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-box {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: var(--card);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close {
+    border: none;
+    background: none;
+    color: var(--text);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.editor {
+    padding: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 260px;
+    resize: vertical;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.char-count {
+    text-align: right;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.secondary {
+    background: #e9eef5;
+    color: #1f2937;
+}
+
+.danger {
+    background: var(--danger);
+}
+
+.success {
+    background: var(--success);
+}
+
+/* =========================
+   PREVIEW
+========================= */
+.preview-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.letter-preview {
+    background: white;
+    color: #111827;
+    border: 1px solid var(--border);
+    padding: 45px;
+    min-height: 350px;
+    font-family: Georgia, serif;
+    white-space: pre-wrap;
+    line-height: 1.8;
+}
+
+/* =========================
+   TOAST
+========================= */
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #172033;
+    color: white;
+    padding: 13px 18px;
+    border-radius: 8px;
+    display: none;
+    z-index: 500;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+    background: #172033;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    font-size: 13px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media(max-width: 900px) {
+    .template-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 650px) {
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .template-grid,
+    .steps,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-box .btn {
+        width: 100%;
+    }
+
+    .nav-actions a {
+        display: none;
+    }
+
+    .letter-preview {
+        padding: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+<div class="navbar">
+
+    <div class="logo">
+        <span class="logo-icon">✎</span>
+        Student Letter Generator
+    </div>
+
+    <div class="nav-actions">
+        <a href="#templates">Templates</a>
+        <a href="#how">How It Works</a>
+
+        <button class="theme-btn" onclick="toggleTheme()">
+            🌙
+        </button>
+    </div>
+
+</div>
+
+</header>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <h1>
+        Generate Student Letters
+        <br>
+        <span>in Seconds</span>
+    </h1>
+
+    <p>
+        Choose a ready-made template, enter your details,
+        customize your letter and download or print it instantly.
+    </p>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Example: I need a leave letter"
+        >
+
+        <button class="btn" onclick="generateFromSearch()">
+            Generate Letter
+        </button>
+
+    </div>
+
+    <div class="suggestions">
+
+        <button class="chip" onclick="quickSearch('leave')">
+            Leave Letter
+        </button>
+
+        <button class="chip" onclick="quickSearch('id card')">
+            ID Card
+        </button>
+
+        <button class="chip" onclick="quickSearch('event')">
+            Event
+        </button>
+
+        <button class="chip" onclick="quickSearch('fee')">
+            Fee Extension
+        </button>
+
+        <button class="chip" onclick="quickSearch('mobile')">
+            Mobile Permission
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TEMPLATES
+========================= -->
+
+<section class="section" id="templates">
+
+    <div class="section-title">
+
+        <h2>Popular Letter Templates</h2>
+
+        <p>
+            Select a template and customize it according to your needs.
+        </p>
+
+    </div>
+
+    <div class="filter-bar">
+
+        <button
+            class="filter-btn active"
+            onclick="filterTemplates('all', this)">
+            All
+        </button>
+
+        <button
+            class="filter-btn"
+            onclick="filterTemplates('permission', this)">
+            Permission
+        </button>
+
+        <button
+            class="filter-btn"
+            onclick="filterTemplates('event', this)">
+            Events
+        </button>
+
+        <button
+            class="filter-btn"
+            onclick="filterTemplates('academic', this)">
+            Academic
+        </button>
+
+    </div>
+
+    <div
+        class="template-grid"
+        id="templateGrid">
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HOW IT WORKS
+========================= -->
+
+<section class="section" id="how">
+
+    <div class="section-title">
+
+        <h2>How It Works</h2>
+
+        <p>
+            Create your letter in three simple steps.
+        </p>
+
+    </div>
+
+    <div class="steps">
+
+        <div class="step">
+
+            <div class="step-number">1</div>
+
+            <h3>Select</h3>
+
+            <p>
+                Choose a suitable letter template.
+            </p>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">2</div>
+
+            <h3>Customize</h3>
+
+            <p>
+                Enter your student details and edit the content.
+            </p>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">3</div>
+
+            <h3>Download</h3>
+
+            <p>
+                Download, copy or print your completed letter.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    © 2026 Student Letter Generator
+
+</footer>
+
+
+<!-- =========================
+     MODAL
+========================= -->
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <h2 id="modalTitle">
+            Letter Generator
+        </h2>
+
+        <button class="close" onclick="closeModal()">
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="editor">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Student Name</label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter your name">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Roll Number</label>
+
+                <input
+                    type="text"
+                    id="rollNo"
+                    placeholder="Enter roll number">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Department</label>
+
+                <input
+                    type="text"
+                    id="department"
+                    placeholder="CSE">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Year / Section</label>
+
+                <input
+                    type="text"
+                    id="year"
+                    placeholder="IV B.Tech - A">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>College Name</label>
+
+                <input
+                    type="text"
+                    id="college"
+                    placeholder="Enter college name">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Date</label>
+
+                <input
+                    type="date"
+                    id="date">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>Letter Content</label>
+
+                <textarea
+                    id="letterText"
+                    oninput="updatePreview(); updateCount()">
+                </textarea>
+
+                <div class="char-count">
+                    <span id="charCount">0</span> characters
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTION BUTTONS -->
+
+        <div class="actions">
+
+            <button
+                class="btn success"
+                onclick="saveLetter()">
+                💾 Save
+            </button>
+
+            <button
+                class="btn"
+                onclick="downloadLetter()">
+                ⬇ Download
+            </button>
+
+            <button
+                class="btn"
+                onclick="printLetter()">
+                🖨 Print / PDF
+            </button>
+
+            <button
+                class="btn secondary"
+                onclick="copyLetter()">
+                📋 Copy
+            </button>
+
+            <button
+                class="btn danger"
+                onclick="resetLetter()">
+                Reset
+            </button>
+
+        </div>
+
+
+        <!-- PREVIEW -->
+
+        <h3 class="preview-title">
+            Letter Preview
+        </h3>
+
+        <div
+            class="letter-preview"
+            id="preview">
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+<script>
+
+/* =========================
+   LETTER TEMPLATES
+========================= */
+
+const templates = [
+
+{
+    id: "leave",
+    icon: "📄",
+    category: "academic",
+    title: "Leave Letter",
+    description: "Request leave from college.",
+    subject: "Request for Leave",
+    body:
+`I am writing to request leave from college for the mentioned period.
+
+I kindly request you to grant me leave. I will make sure to complete the missed academic work and attend classes regularly after returning.`
+},
+
+{
+    id: "id",
+    icon: "🪪",
+    category: "permission",
+    title: "ID Card Permission",
+    description: "Request permission regarding your ID card.",
+    subject: "Request for ID Card Permission",
+    body:
+`I am writing this letter to request permission regarding my college ID card.
+
+I kindly request you to grant me permission and allow me to complete the necessary process. I assure you that I will follow all college rules and instructions.`
+},
+
+{
+    id: "first",
+    icon: "⏰",
+    category: "permission",
+    title: "First Shift Permission",
+    description: "Request permission for first shift.",
+    subject: "Request for First Shift Permission",
+    body:
+`I am writing to request permission to attend the first shift.
+
+Due to my personal circumstances, I kindly request you to grant me permission for the first shift. I assure you that I will attend all required classes and follow the college rules.`
+},
+
+{
+    id: "second",
+    icon: "⏰",
+    category: "permission",
+    title: "Second Shift Permission",
+    description: "Request permission for second shift.",
+    subject: "Request for Second Shift Permission",
+    body:
+`I am writing to request permission to attend the second shift.
+
+Due to my personal circumstances, I kindly request you to grant me permission for the second shift. I assure you that I will attend all required classes and follow the college rules.`
+},
+
+{
+    id: "registration",
+    icon: "📝",
+    category: "event",
+    title: "Event Registration",
+    description: "Request permission to register for an event.",
+    subject: "Request for Event Registration",
+    body:
+`I am writing to request permission to register for the college event.
+
+I am interested in participating in the event and would like to complete the registration process. Kindly grant me permission to register.`
+},
+
+{
+    id: "participation",
+    icon: "🎯",
+    category: "event",
+    title: "Event Participation",
+    description: "Request permission to participate in an event.",
+    subject: "Request for Event Participation",
+    body:
+`I am writing to request permission to participate in the college event.
+
+I am interested in taking part in the event and representing our college. Kindly grant me permission to participate.`
+},
+
+{
+    id: "mobile",
+    icon: "📱",
+    category: "permission",
+    title: "Mobile Permission",
+    description: "Request permission to carry a mobile phone.",
+    subject: "Request for Mobile Carrying Permission",
+    body:
+`I am writing to request permission to carry my mobile phone to college.
+
+I understand the college rules regarding mobile phone usage and assure you that I will keep it switched off or use it only when permitted. Kindly grant me permission.`
+},
+
+{
+    id: "fee",
+    icon: "💳",
+    category: "academic",
+    title: "Fee Extension",
+    description: "Request an extension for fee payment.",
+    subject: "Request for Fee Payment Extension",
+    body:
+`I am writing to request an extension of time for paying my college fee.
+
+Due to personal financial circumstances, I am unable to make the payment within the current deadline. I kindly request you to grant me additional time. I assure you that I will pay the fee within the extended period.`
+},
+
+{
+    id: "bonafide",
+    icon: "📜",
+    category: "academic",
+    title: "Bonafide Certificate",
+    description: "Request a bonafide certificate.",
+    subject: "Request for Bonafide Certificate",
+    body:
+`I am writing to request a bonafide certificate for official purposes.
+
+I kindly request you to issue the certificate at the earliest. I would be grateful for your consideration.`
+},
+
+{
+    id: "scholarship",
+    icon: "🎓",
+    category: "academic",
+    title: "Scholarship Letter",
+    description: "Request a scholarship-related certificate.",
+    subject: "Request for Scholarship Certificate",
+    body:
+`I am writing to request the necessary certificate/documentation required for my scholarship application.
+
+Kindly provide the required document at the earliest so that I can complete the scholarship process within the given deadline.`
+}
+
+];
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentTemplate = null;
+
+
+/* =========================
+   RENDER TEMPLATES
+========================= */
+
+function renderTemplates(list = templates) {
+
+    const grid =
+        document.getElementById("templateGrid");
+
+    grid.innerHTML = "";
+
+    if (list.length === 0) {
+
+        grid.innerHTML = `
+            <p style="grid-column:1/-1;text-align:center;color:var(--muted)">
+                No templates found.
+            </p>
+        `;
+
+        return;
+    }
+
+    list.forEach(template => {
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+
+            <div class="card-icon">
+                ${template.icon}
+            </div>
+
+            <h3>
+                ${template.title}
+            </h3>
+
+            <p>
+                ${template.description}
+            </p>
+
+            <button
+                class="btn"
+                onclick="openTemplate('${template.id}')">
+
+                Use Template
+
+            </button>
+
+        `;
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================
+   OPEN TEMPLATE
+========================= */
+
+function openTemplate(id) {
+
+    currentTemplate =
+        templates.find(t => t.id === id);
+
+    document.getElementById("modalTitle")
+        .textContent = currentTemplate.title;
+
+    document.getElementById("letterText")
+        .value = currentTemplate.body;
+
+    setToday();
+
+    loadSaved();
+
+    updatePreview();
+
+    updateCount();
+
+    document.getElementById("modal")
+        .classList.add("show");
+}
+
+
+/* =========================
+   CLOSE MODAL
+========================= */
+
+function closeModal() {
+
+    document.getElementById("modal")
+        .classList.remove("show");
+
+}
+
+
+/* =========================
+   TODAY DATE
+========================= */
+
+function setToday() {
+
+    const today = new Date();
+
+    document.getElementById("date")
+        .value = today.toISOString().split("T")[0];
+
+}
+
+
+/* =========================
+   FORM VALUES
+========================= */
+
+function getValues() {
+
+    const name =
+        document.getElementById("studentName").value ||
+        "[Student Name]";
+
+    const roll =
+        document.getElementById("rollNo").value ||
+        "[Roll Number]";
+
+    const department =
+        document.getElementById("department").value ||
+        "[Department]";
+
+    const year =
+        document.getElementById("year").value ||
+        "[Year / Section]";
+
+    const college =
+        document.getElementById("college").value ||
+        "[College Name]";
+
+    const date =
+        document.getElementById("date").value;
+
+    const prettyDate = date
+        ? new Date(date + "T00:00:00")
+            .toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                }
+            )
+        : "[Date]";
+
+    return {
+        name,
+        roll,
+        department,
+        year,
+        college,
+        prettyDate
+    };
+
+}
+
+
+/* =========================
+   CREATE COMPLETE LETTER
+========================= */
+
+function fullLetter() {
+
+    const v = getValues();
+
+    return `To
+The Principal / Head of Department
+${v.college}
+
+Date: ${v.prettyDate}
+
+Subject: ${currentTemplate.subject}
+
+Respected Sir/Madam,
+
+${document.getElementById("letterText").value.trim()}
+
+Therefore, I kindly request you to consider my request and grant me the necessary permission.
+
+Thank you.
+
+Yours faithfully,
+${v.name}
+Roll No: ${v.roll}
+${v.department}
+${v.year}`;
+
+}
+
+
+/* =========================
+   LIVE PREVIEW
+========================= */
+
+function updatePreview() {
+
+    document.getElementById("preview")
+        .textContent = fullLetter();
+
+}
+
+
+/* =========================
+   CHARACTER COUNT
+========================= */
+
+function updateCount() {
+
+    const text =
+        document.getElementById("letterText").value;
+
+    document.getElementById("charCount")
+        .textContent = text.length;
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function generateFromSearch() {
+
+    const query =
+        document.getElementById("searchInput")
+            .value
+            .toLowerCase()
+            .trim();
+
+    if (!query) {
+
+        showToast("Please enter the letter type.");
+
+        return;
+    }
+
+    let found = null;
+
+    if (query.includes("leave")) {
+
+        found = "leave";
+
+    } else if (query.includes("id card")) {
+
+        found = "id";
+
+    } else if (
+        query.includes("first shift")
+    ) {
+
+        found = "first";
+
+    } else if (
+        query.includes("second shift")
+    ) {
+
+        found = "second";
+
+    } else if (
+        query.includes("event") &&
+        query.includes("registration")
+    ) {
+
+        found = "registration";
+
+    } else if (
+        query.includes("participation") ||
+        query.includes("participate")
+    ) {
+
+        found = "participation";
+
+    } else if (
+        query.includes("mobile") ||
+        query.includes("phone")
+    ) {
+
+        found = "mobile";
+
+    } else if (
+        query.includes("fee") ||
+        query.includes("payment")
+    ) {
+
+        found = "fee";
+
+    } else if (
+        query.includes("bonafide")
+    ) {
+
+        found = "bonafide";
+
+    } else if (
+        query.includes("scholarship")
+    ) {
+
+        found = "scholarship";
+
+    }
+
+    if (found) {
+
+        openTemplate(found);
+
+    } else {
+
+        showToast(
+            "Try: leave, ID card, event, mobile, fee, bonafide"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   QUICK SEARCH
+========================= */
+
+function quickSearch(text) {
+
+    document.getElementById("searchInput")
+        .value = text;
+
+    generateFromSearch();
+
+}
+
+
+/* =========================
+   FILTER
+========================= */
+
+function filterTemplates(category, button) {
+
+    document.querySelectorAll(".filter-btn")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    if (category === "all") {
+
+        renderTemplates();
+
+    } else {
+
+        renderTemplates(
+            templates.filter(
+                template =>
+                    template.category === category
+            )
+        );
+
+    }
+
+}
+
+
+/* =========================
+   SAVE LETTER
+========================= */
+
+function saveLetter() {
+
+    if (!currentTemplate) return;
+
+    const data = {
+
+        name:
+            document.getElementById("studentName").value,
+
+        roll:
+            document.getElementById("rollNo").value,
+
+        department:
+            document.getElementById("department").value,
+
+        year:
+            document.getElementById("year").value,
+
+        college:
+            document.getElementById("college").value,
+
+        date:
+            document.getElementById("date").value,
+
+        text:
+            document.getElementById("letterText").value
+
+    };
+
+    localStorage.setItem(
+        "student_letter_" + currentTemplate.id,
+        JSON.stringify(data)
+    );
+
+    showToast("Letter saved successfully!");
+
+}
+
+
+/* =========================
+   LOAD SAVED
+========================= */
+
+function loadSaved() {
+
+    if (!currentTemplate) return;
+
+    const saved =
+        localStorage.getItem(
+            "student_letter_" +
+            currentTemplate.id
+        );
+
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    document.getElementById("studentName").value =
+        data.name || "";
+
+    document.getElementById("rollNo").value =
+        data.roll || "";
+
+    document.getElementById("department").value =
+        data.department || "";
+
+    document.getElementById("year").value =
+        data.year || "";
+
+    document.getElementById("college").value =
+        data.college || "";
+
+    document.getElementById("date").value =
+        data.date || document.getElementById("date").value;
+
+    document.getElementById("letterText").value =
+        data.text || currentTemplate.body;
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetLetter() {
+
+    if (!currentTemplate) return;
+
+    document.getElementById("studentName").value = "";
+    document.getElementById("rollNo").value = "";
+    document.getElementById("department").value = "";
+    document.getElementById("year").value = "";
+    document.getElementById("college").value = "";
+
+    setToday();
+
+    document.getElementById("letterText").value =
+        currentTemplate.body;
+
+    updatePreview();
+
+    updateCount();
+
+    showToast("Letter reset.");
+
+}
+
+
+/* =========================
+   DOWNLOAD TXT
+========================= */
+
+function downloadLetter() {
+
+    const content = fullLetter();
+
+    const blob =
+        new Blob(
+            [content],
+            { type: "text/plain" }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        currentTemplate.title
+            .replaceAll(" ", "_") +
+        ".txt";
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+
+    showToast("Letter downloaded!");
+
+}
+
+
+/* =========================
+   COPY
+========================= */
+
+async function copyLetter() {
+
+    try {
+
+        await navigator.clipboard
+            .writeText(fullLetter());
+
+        showToast("Letter copied!");
+
+    } catch {
+
+        showToast("Copy failed.");
+
+    }
+
+}
+
+
+/* =========================
+   PRINT / PDF
+========================= */
+
+function printLetter() {
+
+    const text =
+        fullLetter()
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+
+    const printWindow =
+        window.open("", "_blank");
+
+    printWindow.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                ${currentTemplate.title}
+            </title>
+
+            <style>
+
+                body {
+                    font-family: Georgia, serif;
+                    max-width: 850px;
+                    margin: auto;
+                    padding: 60px;
+                    line-height: 1.8;
+                    white-space: pre-wrap;
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+
+            ${text}
+
+        </body>
+
+        </html>
+
+    `);
+
+    printWindow.document.close();
+
+    printWindow.focus();
+
+    printWindow.print();
+
+}
+
+
+/* =========================
+   DARK MODE
+========================= */
+
+function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const dark =
+        document.body.classList.contains("dark");
+
+    localStorage.setItem(
+        "darkMode",
+        dark
+    );
+
+}
+
+
+/* LOAD DARK MODE */
+
+if (
+    localStorage.getItem("darkMode") === "true"
+) {
+
+    document.body.classList.add("dark");
+
+}
+
+
+/* =========================
+   TOAST MESSAGE
+========================= */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2200);
+
+}
+
+
+/* =========================
+   INPUT EVENTS
+========================= */
+
+[
+    "studentName",
+    "rollNo",
+    "department",
+    "year",
+    "college",
+    "date",
+    "letterText"
+].forEach(id => {
+
+    document.getElementById(id)
+        .addEventListener(
+            "input",
+            updatePreview
+        );
+
+});
+
+
+/* =========================
+   CLOSE MODAL
+========================= */
+
+document
+    .getElementById("modal")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+renderTemplates();
+
+</script>
+
+</body>
+</html>
+```
